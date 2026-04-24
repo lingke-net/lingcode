@@ -968,7 +968,8 @@ export function Prompt(props: PromptProps) {
       return `运行命令... "${example}"`
     }
     if (!list().length) return undefined
-    return `随便问... "${list()[store.placeholder % list().length]}"`
+    //return `不知道问什么？试试问一下 "${list()[store.placeholder % list().length]}"`
+    return `按下 Tab 在 Build 全栈模式 与 Plan 计划模式 间切换`
   })
 
   const spinnerDef = createMemo(() => {
@@ -1372,7 +1373,7 @@ export function Prompt(props: PromptProps) {
               <text fg={store.interrupt > 0 ? theme.primary : theme.text}>
                 esc{" "}
                 <span style={{ fg: store.interrupt > 0 ? theme.primary : theme.textMuted }}>
-                  {store.interrupt > 0 ? "再次中断" : "中断"}
+                  {store.interrupt > 0 ? "再次按下将会中断对话" : "中断对话"}
                 </span>
               </text>
             </box>

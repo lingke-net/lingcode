@@ -283,8 +283,8 @@ export function Session() {
         `${logo[2] ?? ""}`,
         `${logo[3] ?? ""}`,
         ``,
-        `  ${weak("Session 会话")}${UI.Style.TEXT_NORMAL_BOLD}${title}${UI.Style.TEXT_NORMAL}`,
-        `  ${weak("Continue 继续")}${UI.Style.TEXT_NORMAL_BOLD}lingcode -s ${session()?.id}${UI.Style.TEXT_NORMAL}`,
+        `  ${weak("Session: 会话标题 ")}${UI.Style.TEXT_NORMAL_BOLD}${title}${UI.Style.TEXT_NORMAL}`,
+        `  ${weak("Continue: 你可以在 ")}${UI.Style.TEXT_NORMAL_BOLD}lingcode -s ${session()?.id}${UI.Style.TEXT_NORMAL}${weak(" 上继续你的对话")}`,
         ``,
       ].join("\n"),
     )

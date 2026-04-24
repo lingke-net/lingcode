@@ -35,15 +35,17 @@ export function Tips() {
   const parts = parse(TIPS[Math.floor(Math.random() * TIPS.length)])
 
   return (
-    <box flexDirection="row" maxWidth="100%">
-      <text flexShrink={0} style={{ fg: theme.warning }}>
-        ● 提示
-      </text>
-      <text flexShrink={1}>
-        <For each={parts}>
-          {(part) => <span style={{ fg: part.highlight ? theme.text : theme.textMuted }}>{part.text}</span>}
-        </For>
-      </text>
+    <box flexDirection="column" maxWidth="100%">
+      <box flexDirection="row" maxWidth="100%">
+        <text flexShrink={0} style={{ fg: theme.warning }}>
+          ● 你知道吗？
+        </text>
+        <text flexShrink={1}>
+          <For each={parts}>
+            {(part) => <span style={{ fg: part.highlight ? theme.text : theme.textMuted }}>{part.text}</span>}
+          </For>
+        </text>
+      </box>
     </box>
   )
 }

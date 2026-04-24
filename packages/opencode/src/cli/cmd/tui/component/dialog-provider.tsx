@@ -16,12 +16,11 @@ import { useToast } from "../ui/toast"
 import { isConsoleManagedProvider } from "@tui/util/provider-origin"
 
 const PROVIDER_PRIORITY: Record<string, number> = {
-  opencode: 0,
-  "opencode-go": 1,
-  openai: 2,
-  "github-copilot": 3,
-  anthropic: 4,
-  google: 5,
+  openai: 0,
+  lingke: 0.5,
+  "github-copilot": 1,
+  anthropic: 2,
+  google: 3,
 }
 
 export function createDialogProviderOptions() {
@@ -42,10 +41,9 @@ export function createDialogProviderOptions() {
           title: provider.name,
           value: provider.id,
           description: {
-            opencode: "(推荐)",
             anthropic: "(API 密钥)",
             openai: "(ChatGPT Plus/Pro 或 API 密钥)",
-            "opencode-go": "人人可用的低价订阅",
+            lingke: "优质便宜的 Code 模型",
           }[provider.id],
           footer: consoleManaged ? sync.data.console_state.activeOrgName : undefined,
           category: provider.id in PROVIDER_PRIORITY ? "热门" : "其他",
@@ -267,23 +265,13 @@ function ApiMethod(props: ApiMethodProps) {
       placeholder="API 密钥"
       description={
         {
-          opencode: (
+          lingke: (
             <box gap={1}>
               <text fg={theme.textMuted}>
-                lingke coding plan 让您只需一个 API 密钥即可访问最便宜的优质编程模型。
+                Lingke Coding 只需要一个 API 密钥即可使用大部分优质便宜的 Code 编辑模型。
               </text>
               <text fg={theme.text}>
-                访问 <span style={{ fg: theme.primary }}>https://opencode.ai/zen</span> 获取密钥
-              </text>
-            </box>
-          ),
-          "opencode-go": (
-            <box gap={1}>
-              <text fg={theme.textMuted}>
-                OpenCode Go 是每月 10 美元的订阅服务，提供慷慨使用限制的热门开源编程模型。
-              </text>
-              <text fg={theme.text}>
-                访问 <span style={{ fg: theme.primary }}>https://opencode.ai/zen</span> 启用 OpenCode Go
+                访问 <span style={{ fg: theme.primary }}>https://ai.lingke.ink/console/token</span> 获取你的密钥
               </text>
             </box>
           ),

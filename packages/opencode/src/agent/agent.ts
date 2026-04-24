@@ -108,7 +108,7 @@ export const layer = Layer.effect(
         const agents: Record<string, Info> = {
           build: {
             name: "build",
-            description: "The default agent. Executes tools based on configured permissions.",
+            description: "默认智能体。根据配置的权限执行工具操作。",
             options: {},
             permission: Permission.merge(
               defaults,
@@ -123,7 +123,7 @@ export const layer = Layer.effect(
           },
           plan: {
             name: "plan",
-            description: "Plan mode. Disallows all edit tools.",
+            description: "计划模式。禁用所有编辑工具，仅允许规划和思考。",
             options: {},
             permission: Permission.merge(
               defaults,
@@ -146,7 +146,7 @@ export const layer = Layer.effect(
           },
           general: {
             name: "general",
-            description: `General-purpose agent for researching complex questions and executing multi-step tasks. Use this agent to execute multiple units of work in parallel.`,
+            description: `通用智能体，用于研究复杂问题和执行多步骤任务。使用此智能体并行执行多个工作单元。`,
             permission: Permission.merge(
               defaults,
               Permission.fromConfig({

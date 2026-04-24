@@ -28,6 +28,7 @@ import { withStatics } from "@/util/schema"
 
 import * as ProviderTransform from "./transform"
 import { ModelID, ProviderID } from "./schema"
+import { lingkeModelsProvider } from "./lingke-models"
 
 const log = Log.create({ service: "provider" })
 
@@ -528,6 +529,43 @@ function custom(dep: CustomDep): Record<string, CustomLoader> {
           },
         },
       }),
+    lingke: Effect.fnUntraced(function* () {
+      // Lingke Coding - AI coding assistant with automatic model detection
+      // API endpoint: https://ai.lingke.ink/v1
+      // API key can be set via LINGKE_API_KEY environment variable or through CLI auth dialog
+      const envApiKey = yield* dep.get("LINGKE_API_KEY")
+      const auth = yield* dep.auth("lingke")
+
+      // Get API key from Auth service (set via CLI dialog) or environment variable
+      const apiKey = envApiKey ?? (auth?.type === "api" ? auth.key : undefined)
+
+      // Only enable autoload if API key is configured
+      if (!apiKey) {
+        return {
+          autoload: false,
+          async getModel() {
+            throw new Error("您需要前往 https://ai.lingke.ink/console/token 获取你的密钥并设置后才能使用此模型")
+          },
+        }
+      }
+
+      return {
+        autoload: true,
+        options: {
+          baseURL: "https://ai.lingke.ink/v1",
+          apiKey: apiKey,
+          headers: {
+            "HTTP-Referer": "https://ai.lingke.ink/",
+            "X-Title": "Lingke Coding",
+            "X-Source": "lingke-coding",
+          },
+        },
+        async getModel(sdk: any, modelID: string, _options?: Record<string, any>) {
+          // Use standard languageModel for OpenAI-compatible API
+          return sdk.languageModel(modelID)
+        },
+      }
+    }),
     gitlab: Effect.fnUntraced(function* (input: Info) {
       const {
         VERSION: GITLAB_PROVIDER_VERSION,
@@ -1073,6 +1111,9 @@ const layer: Layer.Layer<
         const modelsDev = yield* Effect.promise(() => ModelsDev.get())
         const database = mapValues(modelsDev, fromModelsDevProvider)
 
+        // Add Lingke Coding provider
+        database.lingke = fromModelsDevProvider(lingkeModelsProvider)
+
         const providers: Record<ProviderID, Info> = {} as Record<ProviderID, Info>
         const languages = new Map<string, LanguageModelV3>()
         const modelLoaders: {
@@ -1112,7 +1153,8 @@ const layer: Layer.Layer<
 
         // now read config providers - includes any modifications from plugin config() hook
         const configProviders = Object.entries(cfg.provider ?? {})
-        const disabled = new Set(cfg.disabled_providers ?? [])
+        // Disable zenmux, opencode, and opencode-go by default (Lingke Coding replaces these)
+        const disabled = new Set([...(cfg.disabled_providers ?? []), "zenmux", "opencode", "opencode-go"])
         const enabled = cfg.enabled_providers ? new Set(cfg.enabled_providers) : null
 
         function isProviderAllowed(providerID: ProviderID): boolean {

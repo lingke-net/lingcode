@@ -103,6 +103,12 @@ bun dev:web
 
 # 启动桌面应用
 bun dev:desktop
+
+#打包code
+cd packages/opencode
+$env:PATH = "C:\Users\ab090\.bun\bin;$env:PATH"
+bun run script/build.ts --single --skip-install
+
 ```
 
 ### 常用开发命令

@@ -348,7 +348,7 @@ export const ProvidersLoginCommand = cmd({
         )
 
         const priority: Record<string, number> = {
-          opencode: 0,
+          lingke: 0,
           openai: 1,
           "github-copilot": 2,
           google: 3,
@@ -375,8 +375,8 @@ export const ProvidersLoginCommand = cmd({
               label: x.name,
               value: x.id,
               hint: {
-                opencode: "推荐",
                 openai: "ChatGPT Plus/Pro 或 API 密钥",
+                lingke: "优质便宜的 Code 模型",
               }[x.id],
             })),
           ),
@@ -460,6 +460,13 @@ export const ProvidersLoginCommand = cmd({
         if (["cloudflare", "cloudflare-ai-gateway"].includes(provider)) {
           prompts.log.info(
             "Cloudflare AI Gateway 可以通过 CLOUDFLARE_GATEWAY_ID、CLOUDFLARE_ACCOUNT_ID 和 CLOUDFLARE_API_TOKEN 环境变量配置。详见: https://opencode.ai/docs/providers/#cloudflare-ai-gateway",
+          )
+        }
+
+        if (provider === "lingke") {
+          prompts.log.info(
+            "Lingke Coding 只需要一个 API 密钥即可使用大部分优质便宜的 Code 编辑模型\n" +
+              "访问 https://ai.lingke.ink/console/token 获取你的密钥",
           )
         }
 

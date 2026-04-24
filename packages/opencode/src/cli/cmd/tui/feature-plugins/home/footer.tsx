@@ -10,7 +10,8 @@ function Directory(props: { api: TuiPluginApi }) {
     const dir = props.api.state.path.directory || process.cwd()
     const out = dir.replace(Global.Path.home, "~")
     const branch = props.api.state.vcs?.branch
-    if (branch) return out + ":" + branch
+    //if (branch) return out + ":" + branch
+    if (branch) return out + ":Ling"
     return out
   })
 

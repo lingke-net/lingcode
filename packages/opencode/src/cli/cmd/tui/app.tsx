@@ -304,24 +304,24 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
     if (!terminalTitleEnabled() || Flag.OPENCODE_DISABLE_TERMINAL_TITLE) return
 
     if (route.data.type === "home") {
-      renderer.setTerminalTitle("OpenCode")
+      renderer.setTerminalTitle("LingCode")
       return
     }
 
     if (route.data.type === "session") {
       const session = sync.session.get(route.data.sessionID)
       if (!session || SessionApi.isDefaultTitle(session.title)) {
-        renderer.setTerminalTitle("OpenCode")
+        renderer.setTerminalTitle("LingCode")
         return
       }
 
       const title = session.title.length > 40 ? session.title.slice(0, 37) + "..." : session.title
-      renderer.setTerminalTitle(`OC | ${title}`)
+      renderer.setTerminalTitle(`LC | ${title}`)
       return
     }
 
     if (route.data.type === "plugin") {
-      renderer.setTerminalTitle(`OC | ${route.data.id}`)
+      renderer.setTerminalTitle(`LC | ${route.data.id}`)
     }
   })
 
@@ -401,7 +401,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
   const connected = useConnected()
   command.register(() => [
     {
-      title: "Switch session",
+      title: "切换会话",
       value: "session.list",
       keybind: "session_list",
       category: "Session",
@@ -432,7 +432,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: "Switch model",
+      title: "切换模型",
       value: "model.list",
       keybind: "model_list",
       suggested: true,
@@ -445,7 +445,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: "Model cycle",
+      title: "模型循环",
       value: "model.cycle_recent",
       keybind: "model_cycle_recent",
       category: "Agent",
@@ -455,7 +455,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: "Model cycle reverse",
+      title: "反向模型循环",
       value: "model.cycle_recent_reverse",
       keybind: "model_cycle_recent_reverse",
       category: "Agent",
@@ -465,7 +465,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: "Favorite cycle",
+      title: "收藏循环",
       value: "model.cycle_favorite",
       keybind: "model_cycle_favorite",
       category: "Agent",
@@ -475,7 +475,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: "Favorite cycle reverse",
+      title: "反向收藏循环",
       value: "model.cycle_favorite_reverse",
       keybind: "model_cycle_favorite_reverse",
       category: "Agent",
@@ -485,7 +485,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: "Switch agent",
+      title: "切换 Agent",
       value: "agent.list",
       keybind: "agent_list",
       category: "Agent",
@@ -497,7 +497,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: "Toggle MCPs",
+      title: "切换 MCP",
       value: "mcp.list",
       category: "Agent",
       slash: {
@@ -508,7 +508,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: "Agent cycle",
+      title: "Agent 循环",
       value: "agent.cycle",
       keybind: "agent_cycle",
       category: "Agent",
@@ -518,7 +518,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: "Variant cycle",
+      title: "模型版本循环",
       value: "variant.cycle",
       keybind: "variant_cycle",
       category: "Agent",
@@ -527,7 +527,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: "Switch model variant",
+      title: "切换模型版本",
       value: "variant.list",
       keybind: "variant_list",
       category: "Agent",
@@ -540,7 +540,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: "Agent cycle reverse",
+      title: "反向 Agent 循环",
       value: "agent.cycle.reverse",
       keybind: "agent_cycle_reverse",
       category: "Agent",
@@ -550,7 +550,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: "Connect provider",
+      title: "连接服务商",
       value: "provider.connect",
       suggested: !connected(),
       slash: {
@@ -564,7 +564,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
     ...(sync.data.console_state.switchableOrgCount > 1
       ? [
           {
-            title: "Switch org",
+            title: "切换组织",
             value: "console.org.switch",
             suggested: Boolean(sync.data.console_state.activeOrgName),
             slash: {
@@ -579,7 +579,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
         ]
       : []),
     {
-      title: "View status",
+      title: "查看状态",
       keybind: "status_view",
       value: "opencode.status",
       slash: {
@@ -591,7 +591,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       category: "System",
     },
     {
-      title: "Switch theme",
+      title: "切换主题",
       value: "theme.switch",
       keybind: "theme_list",
       slash: {
@@ -603,7 +603,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       category: "System",
     },
     {
-      title: mode() === "dark" ? "Switch to light mode" : "Switch to dark mode",
+      title: mode() === "dark" ? "切换到浅色模式" : "切换到深色模式",
       value: "theme.switch_mode",
       onSelect: (dialog) => {
         setMode(mode() === "dark" ? "light" : "dark")
@@ -612,7 +612,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       category: "System",
     },
     {
-      title: locked() ? "Unlock theme mode" : "Lock theme mode",
+      title: locked() ? "解锁模式" : "锁定模式",
       value: "theme.mode.lock",
       onSelect: (dialog) => {
         if (locked()) unlock()
@@ -622,7 +622,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       category: "System",
     },
     {
-      title: "Help",
+      title: "帮助",
       value: "help.show",
       slash: {
         name: "help",
@@ -633,16 +633,16 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       category: "System",
     },
     {
-      title: "Open docs",
+      title: "前往 Lingke Code 官网获取帮助",
       value: "docs.open",
       onSelect: () => {
-        open("https://opencode.ai/docs").catch(() => {})
+        open("https://lingcode.lingke.ink").catch(() => {})
         dialog.clear()
       },
       category: "System",
     },
     {
-      title: "Exit the app",
+      title: "强制退出 LingCode",
       value: "app.exit",
       slash: {
         name: "exit",
@@ -652,7 +652,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       category: "System",
     },
     {
-      title: "Toggle debug panel",
+      title: "切换调试面板",
       category: "System",
       value: "app.debug",
       onSelect: (dialog) => {
@@ -661,7 +661,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: "Toggle console",
+      title: "切换控制台",
       category: "System",
       value: "app.console",
       onSelect: (dialog) => {
@@ -670,7 +670,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: "Write heap snapshot",
+      title: "写入堆快照",
       category: "System",
       value: "app.heap_snapshot",
       onSelect: async (dialog) => {
@@ -684,7 +684,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: "Suspend terminal",
+      title: "挂起终端",
       value: "terminal.suspend",
       keybind: "terminal_suspend",
       category: "System",
@@ -701,7 +701,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: terminalTitleEnabled() ? "Disable terminal title" : "Enable terminal title",
+      title: terminalTitleEnabled() ? "禁用终端标题" : "启用终端标题",
       value: "terminal.title.toggle",
       keybind: "terminal_title_toggle",
       category: "System",
@@ -716,7 +716,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: kv.get("animations_enabled", true) ? "Disable animations" : "Enable animations",
+      title: kv.get("animations_enabled", true) ? "禁用动画" : "启用动画",
       value: "app.toggle.animations",
       category: "System",
       onSelect: (dialog) => {
@@ -725,7 +725,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: kv.get("diff_wrap_mode", "word") === "word" ? "Disable diff wrapping" : "Enable diff wrapping",
+      title: kv.get("diff_wrap_mode", "word") === "word" ? "禁用差异换行" : "启用差异换行",
       value: "app.toggle.diffwrap",
       category: "System",
       onSelect: (dialog) => {
