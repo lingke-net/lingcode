@@ -77,10 +77,10 @@ function fallback(part: ToolPart) {
 function glob(info: ToolProps<typeof GlobTool>) {
   const root = info.input.path ?? ""
   const title = `Glob "${info.input.pattern}"`
-  const suffix = root ? `in ${normalizePath(root)}` : ""
+  const suffix = root ? `在 ${normalizePath(root)}` : ""
   const num = info.metadata.count
   const description =
-    num === undefined ? suffix : `${suffix}${suffix ? " · " : ""}${num} ${num === 1 ? "match" : "matches"}`
+    num === undefined ? suffix : `${suffix}${suffix ? " · " : ""}${num} 个${num === 1 ? "匹配" : "匹配"}`
   inline({
     icon: "✱",
     title,
@@ -91,10 +91,10 @@ function glob(info: ToolProps<typeof GlobTool>) {
 function grep(info: ToolProps<typeof GrepTool>) {
   const root = info.input.path ?? ""
   const title = `Grep "${info.input.pattern}"`
-  const suffix = root ? `in ${normalizePath(root)}` : ""
+  const suffix = root ? `在 ${normalizePath(root)}` : ""
   const num = info.metadata.matches
   const description =
-    num === undefined ? suffix : `${suffix}${suffix ? " · " : ""}${num} ${num === 1 ? "match" : "matches"}`
+    num === undefined ? suffix : `${suffix}${suffix ? " · " : ""}${num} 个${num === 1 ? "匹配" : "匹配"}`
   inline({
     icon: "✱",
     title,
@@ -168,11 +168,11 @@ function task(info: ToolProps<typeof TaskTool>) {
   const desc =
     typeof input.description === "string" && input.description.trim().length > 0 ? input.description : undefined
   const icon = status === "error" ? "✗" : status === "running" ? "•" : "✓"
-  const name = desc ?? `${agent} Task`
+  const name = desc ?? `${agent} 任务`
   inline({
     icon,
     title: name,
-    description: desc ? `${agent} Agent` : undefined,
+    description: desc ? `${agent} 智能体` : undefined,
   })
 }
 
@@ -212,91 +212,91 @@ function normalizePath(input?: string) {
 
 export const RunCommand = cmd({
   command: "run [message..]",
-  describe: "run opencode with a message",
+  describe: "使用消息运行 opencode",
   builder: (yargs: Argv) => {
     return yargs
       .positional("message", {
-        describe: "message to send",
+        describe: "要发送的消息",
         type: "string",
         array: true,
         default: [],
       })
       .option("command", {
-        describe: "the command to run, use message for args",
+        describe: "要运行的命令，使用 message 作为参数",
         type: "string",
       })
       .option("continue", {
         alias: ["c"],
-        describe: "continue the last session",
+        describe: "继续上一个会话",
         type: "boolean",
       })
       .option("session", {
         alias: ["s"],
-        describe: "session id to continue",
+        describe: "要继续的会话 ID",
         type: "string",
       })
       .option("fork", {
-        describe: "fork the session before continuing (requires --continue or --session)",
+        describe: "继续前先 fork 会话（需要 --continue 或 --session）",
         type: "boolean",
       })
       .option("share", {
         type: "boolean",
-        describe: "share the session",
+        describe: "分享会话",
       })
       .option("model", {
         type: "string",
         alias: ["m"],
-        describe: "model to use in the format of provider/model",
+        describe: "使用的模型，格式为 provider/model",
       })
       .option("agent", {
         type: "string",
-        describe: "agent to use",
+        describe: "使用的智能体",
       })
       .option("format", {
         type: "string",
         choices: ["default", "json"],
         default: "default",
-        describe: "format: default (formatted) or json (raw JSON events)",
+        describe: "格式: default（格式化）或 json（原始 JSON 事件）",
       })
       .option("file", {
         alias: ["f"],
         type: "string",
         array: true,
-        describe: "file(s) to attach to message",
+        describe: "附加到消息的文件",
       })
       .option("title", {
         type: "string",
-        describe: "title for the session (uses truncated prompt if no value provided)",
+        describe: "会话标题（如果不提供则使用截断的提示）",
       })
       .option("attach", {
         type: "string",
-        describe: "attach to a running opencode server (e.g., http://localhost:4096)",
+        describe: "附加到正在运行的 opencode 服务器（例如 http://localhost:4096）",
       })
       .option("password", {
         alias: ["p"],
         type: "string",
-        describe: "basic auth password (defaults to OPENCODE_SERVER_PASSWORD)",
+        describe: "基本认证密码（默认为 OPENCODE_SERVER_PASSWORD）",
       })
       .option("dir", {
         type: "string",
-        describe: "directory to run in, path on remote server if attaching",
+        describe: "运行目录，附加时为远程服务器上的路径",
       })
       .option("port", {
         type: "number",
-        describe: "port for the local server (defaults to random port if no value provided)",
+        describe: "本地服务器端口（如果不提供则默认为随机端口）",
       })
       .option("variant", {
         type: "string",
-        describe: "model variant (provider-specific reasoning effort, e.g., high, max, minimal)",
+        describe: "模型变体（提供商特定的推理强度，如 high, max, minimal）",
       })
       .option("thinking", {
         type: "boolean",
-        describe: "show thinking blocks",
+        describe: "显示思考块",
         default: false,
       })
       .option("dangerously-skip-permissions", {
         type: "boolean",
-        describe: "auto-approve permissions that are not explicitly denied (dangerous!)",
+        describe: "自动批准未明确拒绝的权限（危险！）",
         default: false,
       })
   },
@@ -342,12 +342,12 @@ export const RunCommand = cmd({
     if (!process.stdin.isTTY) message += "\n" + (await Bun.stdin.text())
 
     if (message.trim().length === 0 && !args.command) {
-      UI.error("You must provide a message or a command")
+      UI.error("必须提供消息或命令")
       process.exit(1)
     }
 
     if (args.fork && !args.continue && !args.session) {
-      UI.error("--fork requires --continue or --session")
+      UI.error("--fork 需要 --continue 或 --session")
       process.exit(1)
     }
 
@@ -506,7 +506,7 @@ export const RunCommand = cmd({
               if (emit("reasoning", { part })) continue
               const text = part.text.trim()
               if (!text) continue
-              const line = `Thinking: ${text}`
+              const line = `思考: ${text}`
               if (process.stdout.isTTY) {
                 UI.empty()
                 UI.println(`${UI.Style.TEXT_DIM}\u001b[3m${line}\u001b[0m${UI.Style.TEXT_NORMAL}`)
@@ -550,7 +550,7 @@ export const RunCommand = cmd({
               UI.println(
                 UI.Style.TEXT_WARNING_BOLD + "!",
                 UI.Style.TEXT_NORMAL +
-                  `permission requested: ${permission.permission} (${permission.patterns.join(", ")}); auto-rejecting`,
+                  `请求权限: ${permission.permission} (${permission.patterns.join(", ")})；自动拒绝`,
               )
               await sdk.permission.reply({
                 requestID: permission.id,
@@ -577,7 +577,7 @@ export const RunCommand = cmd({
             UI.println(
               UI.Style.TEXT_WARNING_BOLD + "!",
               UI.Style.TEXT_NORMAL,
-              `failed to list agents from ${args.attach}. Falling back to default agent`,
+              `无法从 ${args.attach} 列出智能体。回退到默认智能体`,
             )
             return undefined
           }
@@ -587,7 +587,7 @@ export const RunCommand = cmd({
             UI.println(
               UI.Style.TEXT_WARNING_BOLD + "!",
               UI.Style.TEXT_NORMAL,
-              `agent "${name}" not found. Falling back to default agent`,
+              `未找到智能体 "${name}"。回退到默认智能体`,
             )
             return undefined
           }
@@ -596,7 +596,7 @@ export const RunCommand = cmd({
             UI.println(
               UI.Style.TEXT_WARNING_BOLD + "!",
               UI.Style.TEXT_NORMAL,
-              `agent "${name}" is a subagent, not a primary agent. Falling back to default agent`,
+              `智能体 "${name}" 是子智能体，不是主智能体。回退到默认智能体`,
             )
             return undefined
           }
@@ -609,7 +609,7 @@ export const RunCommand = cmd({
           UI.println(
             UI.Style.TEXT_WARNING_BOLD + "!",
             UI.Style.TEXT_NORMAL,
-            `agent "${name}" not found. Falling back to default agent`,
+            `未找到智能体 "${name}"。回退到默认智能体`,
           )
           return undefined
         }
@@ -617,7 +617,7 @@ export const RunCommand = cmd({
           UI.println(
             UI.Style.TEXT_WARNING_BOLD + "!",
             UI.Style.TEXT_NORMAL,
-            `agent "${name}" is a subagent, not a primary agent. Falling back to default agent`,
+            `智能体 "${name}" 是子智能体，不是主智能体。回退到默认智能体`,
           )
           return undefined
         }
@@ -626,7 +626,7 @@ export const RunCommand = cmd({
 
       const sessionID = await session(sdk)
       if (!sessionID) {
-        UI.error("Session not found")
+        UI.error("未找到会话")
         process.exit(1)
       }
       await share(sdk, sessionID)

@@ -77,10 +77,10 @@ export function transformShareData(shareData: ShareData[]): {
 
 export const ImportCommand = cmd({
   command: "import <file>",
-  describe: "import session data from JSON file or URL",
+  describe: "从 JSON 文件或 URL 导入会话数据",
   builder: (yargs: Argv) => {
     return yargs.positional("file", {
-      describe: "path to JSON file or share URL",
+      describe: "JSON 文件路径或分享 URL",
       type: "string",
       demandOption: true,
     })
@@ -103,7 +103,7 @@ export const ImportCommand = cmd({
         const slug = parseShareUrl(args.file)
         if (!slug) {
           const baseUrl = await AppRuntime.runPromise(ShareNext.Service.use((svc) => svc.url()))
-          process.stdout.write(`Invalid URL format. Expected: ${baseUrl}/share/<slug>`)
+          process.stdout.write(`无效的 URL 格式。预期: ${baseUrl}/share/<slug>`)
           process.stdout.write(EOL)
           return
         }
@@ -125,7 +125,7 @@ export const ImportCommand = cmd({
         }
 
         if (!response.ok) {
-          process.stdout.write(`Failed to fetch share data: ${response.statusText}`)
+          process.stdout.write(`获取分享数据失败: ${response.statusText}`)
           process.stdout.write(EOL)
           return
         }
@@ -134,7 +134,7 @@ export const ImportCommand = cmd({
         const transformed = transformShareData(shareData)
 
         if (!transformed) {
-          process.stdout.write(`Share not found or empty: ${slug}`)
+          process.stdout.write(`分享不存在或为空: ${slug}`)
           process.stdout.write(EOL)
           return
         }
@@ -143,14 +143,14 @@ export const ImportCommand = cmd({
       } else {
         exportData = await Filesystem.readJson<NonNullable<typeof exportData>>(args.file).catch(() => undefined)
         if (!exportData) {
-          process.stdout.write(`File not found: ${args.file}`)
+          process.stdout.write(`文件未找到: ${args.file}`)
           process.stdout.write(EOL)
           return
         }
       }
 
       if (!exportData) {
-        process.stdout.write(`Failed to read session data`)
+        process.stdout.write(`读取会话数据失败`)
         process.stdout.write(EOL)
         return
       }
@@ -202,7 +202,7 @@ export const ImportCommand = cmd({
         }
       }
 
-      process.stdout.write(`Imported session: ${exportData.info.id}`)
+      process.stdout.write(`已导入会话: ${exportData.info.id}`)
       process.stdout.write(EOL)
     })
   },

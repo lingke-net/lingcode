@@ -7,7 +7,7 @@
 ## Do Not Translate (Locale Additions)
 
 - `OpenCode` (preserve casing in prose; keep `opencode` only when it is part of commands, package names, paths, or code)
-- `OpenCode Zen`
+- `lingke coding plan`
 - `OpenCode CLI`
 - `CLI`, `TUI`, `MCP`, `OAuth`
 - `Model Context Protocol` (prefer the English expansion when introducing `MCP`)

@@ -17,7 +17,7 @@ function View(props: { show: boolean }) {
 const tui: TuiPlugin = async (api) => {
   api.command.register(() => [
     {
-      title: api.kv.get("tips_hidden", false) ? "Show tips" : "Hide tips",
+      title: api.kv.get("tips_hidden", false) ? "显示提示" : "隐藏提示",
       value: "tips.toggle",
       keybind: "tips_toggle",
       category: "System",

@@ -74,11 +74,11 @@ export function createPlugTask(input: PlugInput, dep: PlugDeps = defaultPlugDeps
 
   return async (ctx: PlugCtx) => {
     const install = dep.spinner()
-    install.start("Installing plugin package...")
+    install.start("正在安装插件包...")
     const target = await installPlugin(mod, dep)
     if (!target.ok) {
-      install.stop("Install failed", 1)
-      dep.log.error(`Could not install "${mod}"`)
+      install.stop("安装失败", 1)
+      dep.log.error(`无法安装 "${mod}"`)
       const hit = cause(target.error) ?? target.error
       if (hit instanceof Process.RunFailedError) {
         const lines = hit.stderr
@@ -90,8 +90,8 @@ export function createPlugTask(input: PlugInput, dep: PlugDeps = defaultPlugDeps
         const detail = errs[0] ?? lines.at(-1)
         if (detail) dep.log.error(detail)
         if (lines.some((line) => line.includes("No version matching"))) {
-          dep.log.info("This package depends on a version that is not available in your npm registry.")
-          dep.log.info("Check npm registry/auth settings and try again.")
+          dep.log.info("此包依赖于您 npm 注册表中不可用的版本。")
+          dep.log.info("请检查 npm 注册表/认证设置后重试。")
         }
       }
       if (!(hit instanceof Process.RunFailedError)) {
@@ -99,38 +99,38 @@ export function createPlugTask(input: PlugInput, dep: PlugDeps = defaultPlugDeps
       }
       return false
     }
-    install.stop("Plugin package ready")
+    install.stop("插件包已就绪")
 
     const inspect = dep.spinner()
-    inspect.start("Reading plugin manifest...")
+    inspect.start("正在读取插件清单...")
     const manifest = await readPluginManifest(target.target)
     if (!manifest.ok) {
       if (manifest.code === "manifest_read_failed") {
-        inspect.stop("Manifest read failed", 1)
-        dep.log.error(`Installed "${mod}" but failed to read ${manifest.file}`)
+        inspect.stop("清单读取失败", 1)
+        dep.log.error(`已安装 "${mod}" 但无法读取 ${manifest.file}`)
         dep.log.error(errorMessage(cause(manifest.error) ?? manifest.error))
         return false
       }
 
       if (manifest.code === "manifest_no_targets") {
-        inspect.stop("No plugin targets found", 1)
-        dep.log.error(`"${mod}" does not expose plugin entrypoints in package.json`)
+        inspect.stop("未找到插件目标", 1)
+        dep.log.error(`"${mod}" 未在 package.json 中暴露插件入口点`)
         dep.log.info(
-          'Expected one of: exports["./tui"], exports["./server"], package.json main for server, or package.json["oc-themes"] for tui themes.',
+          "预期以下之一: exports[\"./tui\"]、exports[\"./server\"]、package.json main（服务端）或 package.json[\"oc-themes\"]（tui 主题）。",
         )
         return false
       }
 
-      inspect.stop("Manifest read failed", 1)
+      inspect.stop("清单读取失败", 1)
       return false
     }
 
     inspect.stop(
-      `Detected ${manifest.targets.map((item) => item.kind).join(" + ")} target${manifest.targets.length === 1 ? "" : "s"}`,
+      `检测到 ${manifest.targets.map((item) => item.kind).join(" + ")} 目标${manifest.targets.length === 1 ? "" : "s"}`,
     )
 
     const patch = dep.spinner()
-    patch.start("Updating plugin config...")
+    patch.start("正在更新插件配置...")
     const out = await patchPluginConfig(
       {
         spec: mod,
@@ -146,31 +146,31 @@ export function createPlugTask(input: PlugInput, dep: PlugDeps = defaultPlugDeps
     )
     if (!out.ok) {
       if (out.code === "invalid_json") {
-        patch.stop(`Failed updating ${out.kind} config`, 1)
-        dep.log.error(`Invalid JSON in ${out.file} (${out.parse} at line ${out.line}, column ${out.col})`)
-        dep.log.info("Fix the config file and run the command again.")
+        patch.stop(`更新 ${out.kind} 配置失败`, 1)
+        dep.log.error(`${out.file} 中的 JSON 无效（第 ${out.line} 行，第 ${out.col} 列）`)
+        dep.log.info("请修复配置文件后重新运行命令。")
         return false
       }
 
-      patch.stop("Failed updating plugin config", 1)
+      patch.stop("更新插件配置失败", 1)
       dep.log.error(errorMessage(out.error))
       return false
     }
-    patch.stop("Plugin config updated")
+    patch.stop("插件配置已更新")
     for (const item of out.items) {
       if (item.mode === "noop") {
-        dep.log.info(`Already configured in ${item.file}`)
+        dep.log.info(`已在 ${item.file} 中配置`)
         continue
       }
       if (item.mode === "replace") {
-        dep.log.info(`Replaced in ${item.file}`)
+        dep.log.info(`已在 ${item.file} 中替换`)
         continue
       }
-      dep.log.info(`Added to ${item.file}`)
+      dep.log.info(`已添加到 ${item.file}`)
     }
 
-    dep.log.success(`Installed ${mod}`)
-    dep.log.info(global ? `Scope: global (${out.dir})` : `Scope: local (${out.dir})`)
+    dep.log.success(`已安装 ${mod}`)
+    dep.log.info(global ? `范围: 全局 (${out.dir})` : `范围: 本地 (${out.dir})`)
     return true
   }
 }
@@ -178,36 +178,36 @@ export function createPlugTask(input: PlugInput, dep: PlugDeps = defaultPlugDeps
 export const PluginCommand = cmd({
   command: "plugin <module>",
   aliases: ["plug"],
-  describe: "install plugin and update config",
+  describe: "安装插件并更新配置",
   builder: (yargs: Argv) => {
     return yargs
       .positional("module", {
         type: "string",
-        describe: "npm module name",
+        describe: "npm 模块名称",
       })
       .option("global", {
         alias: ["g"],
         type: "boolean",
         default: false,
-        describe: "install in global config",
+        describe: "安装到全局配置",
       })
       .option("force", {
         alias: ["f"],
         type: "boolean",
         default: false,
-        describe: "replace existing plugin version",
+        describe: "替换现有插件版本",
       })
   },
   handler: async (args) => {
     const mod = String(args.module ?? "").trim()
     if (!mod) {
-      UI.error("module is required")
+      UI.error("必须指定模块")
       process.exitCode = 1
       return
     }
 
     UI.empty()
-    intro(`Install plugin ${mod}`)
+    intro(`安装插件 ${mod}`)
 
     const run = createPlugTask({
       mod,
@@ -227,7 +227,7 @@ export const PluginCommand = cmd({
       },
     })
 
-    outro("Done")
+    outro("完成")
     if (!ok) process.exitCode = 1
   },
 })

@@ -32,14 +32,14 @@ async function handlePluginAuth(plugin: { auth: PluginAuth }, provider: string, 
     const match = plugin.auth.methods.findIndex((x) => x.label.toLowerCase() === methodName.toLowerCase())
     if (match === -1) {
       prompts.log.error(
-        `Unknown method "${methodName}" for ${provider}. Available: ${plugin.auth.methods.map((x) => x.label).join(", ")}`,
+        `未知的方法 "${methodName}" 对于 ${provider}。可用方法: ${plugin.auth.methods.map((x) => x.label).join(", ")}`,
       )
       process.exit(1)
     }
     index = match
   } else if (plugin.auth.methods.length > 1) {
     const method = await prompts.select({
-      message: "Login method",
+      message: "登录方式",
       options: plugin.auth.methods.map((x, index) => ({
         label: x.label,
         value: index.toString(),
@@ -84,7 +84,7 @@ async function handlePluginAuth(plugin: { auth: PluginAuth }, provider: string, 
     const authorize = await method.authorize(inputs)
 
     if (authorize.url) {
-      prompts.log.info("Go to: " + authorize.url)
+      prompts.log.info("访问: " + authorize.url)
     }
 
     if (authorize.method === "auto") {
@@ -92,10 +92,10 @@ async function handlePluginAuth(plugin: { auth: PluginAuth }, provider: string, 
         prompts.log.info(authorize.instructions)
       }
       const spinner = prompts.spinner()
-      spinner.start("Waiting for authorization...")
+      spinner.start("等待授权中...")
       const result = await authorize.callback()
       if (result.type === "failed") {
-        spinner.stop("Failed to authorize", 1)
+        spinner.stop("授权失败", 1)
       }
       if (result.type === "success") {
         const saveProvider = result.provider ?? provider
@@ -115,19 +115,19 @@ async function handlePluginAuth(plugin: { auth: PluginAuth }, provider: string, 
             key: result.key,
           })
         }
-        spinner.stop("Login successful")
+        spinner.stop("登录成功")
       }
     }
 
     if (authorize.method === "code") {
       const code = await prompts.text({
-        message: "Paste the authorization code here: ",
-        validate: (x) => (x && x.length > 0 ? undefined : "Required"),
+        message: "在此粘贴授权码: ",
+        validate: (x) => (x && x.length > 0 ? undefined : "必填"),
       })
       if (prompts.isCancel(code)) throw new UI.CancelledError()
       const result = await authorize.callback(code)
       if (result.type === "failed") {
-        prompts.log.error("Failed to authorize")
+        prompts.log.error("授权失败")
       }
       if (result.type === "success") {
         const saveProvider = result.provider ?? provider
@@ -147,25 +147,25 @@ async function handlePluginAuth(plugin: { auth: PluginAuth }, provider: string, 
             key: result.key,
           })
         }
-        prompts.log.success("Login successful")
+        prompts.log.success("登录成功")
       }
     }
 
-    prompts.outro("Done")
+    prompts.outro("完成")
     return true
   }
 
   if (method.type === "api") {
     if (method.authorize) {
       const key = await prompts.password({
-        message: "Enter your API key",
-        validate: (x) => (x && x.length > 0 ? undefined : "Required"),
+        message: "输入您的 API 密钥",
+        validate: (x) => (x && x.length > 0 ? undefined : "必填"),
       })
       if (prompts.isCancel(key)) throw new UI.CancelledError()
 
       const result = await method.authorize(inputs)
       if (result.type === "failed") {
-        prompts.log.error("Failed to authorize")
+        prompts.log.error("授权失败")
       }
       if (result.type === "success") {
         const saveProvider = result.provider ?? provider
@@ -173,9 +173,9 @@ async function handlePluginAuth(plugin: { auth: PluginAuth }, provider: string, 
           type: "api",
           key: result.key ?? key,
         })
-        prompts.log.success("Login successful")
+        prompts.log.success("登录成功")
       }
-      prompts.outro("Done")
+      prompts.outro("完成")
       return true
     }
   }
@@ -213,7 +213,7 @@ export function resolvePluginProviders(input: {
 export const ProvidersCommand = cmd({
   command: "providers",
   aliases: ["auth"],
-  describe: "manage AI providers and credentials",
+  describe: "管理 AI 提供商和凭据",
   builder: (yargs) =>
     yargs.command(ProvidersListCommand).command(ProvidersLoginCommand).command(ProvidersLogoutCommand).demandCommand(),
   async handler() {},
@@ -222,13 +222,13 @@ export const ProvidersCommand = cmd({
 export const ProvidersListCommand = cmd({
   command: "list",
   aliases: ["ls"],
-  describe: "list providers and credentials",
+  describe: "列出提供商和凭据",
   async handler(_args) {
     UI.empty()
     const authPath = path.join(Global.Path.data, "auth.json")
     const homedir = os.homedir()
     const displayPath = authPath.startsWith(homedir) ? authPath.replace(homedir, "~") : authPath
-    prompts.intro(`Credentials ${UI.Style.TEXT_DIM}${displayPath}`)
+    prompts.intro(`凭据 ${UI.Style.TEXT_DIM}${displayPath}`)
     const results = await AppRuntime.runPromise(
       Effect.gen(function* () {
         const auth = yield* Auth.Service
@@ -242,7 +242,7 @@ export const ProvidersListCommand = cmd({
       prompts.log.info(`${name} ${UI.Style.TEXT_DIM}${result.type}`)
     }
 
-    prompts.outro(`${results.length} credentials`)
+    prompts.outro(`${results.length} 个凭据`)
 
     const activeEnvVars: Array<{ provider: string; envVar: string }> = []
 
@@ -259,34 +259,34 @@ export const ProvidersListCommand = cmd({
 
     if (activeEnvVars.length > 0) {
       UI.empty()
-      prompts.intro("Environment")
+      prompts.intro("环境变量")
 
       for (const { provider, envVar } of activeEnvVars) {
         prompts.log.info(`${provider} ${UI.Style.TEXT_DIM}${envVar}`)
       }
 
-      prompts.outro(`${activeEnvVars.length} environment variable` + (activeEnvVars.length === 1 ? "" : "s"))
+      prompts.outro(`${activeEnvVars.length} 个环境变量`)
     }
   },
 })
 
 export const ProvidersLoginCommand = cmd({
   command: "login [url]",
-  describe: "log in to a provider",
+  describe: "登录到提供商",
   builder: (yargs) =>
     yargs
       .positional("url", {
-        describe: "opencode auth provider",
+        describe: "opencode 认证提供商",
         type: "string",
       })
       .option("provider", {
         alias: ["p"],
-        describe: "provider id or name to log in to (skips provider selection)",
+        describe: "要登录的提供商 ID 或名称（跳过提供商选择）",
         type: "string",
       })
       .option("method", {
         alias: ["m"],
-        describe: "login method label (skips method selection)",
+        describe: "登录方式标签（跳过方式选择）",
         type: "string",
       }),
   async handler(args) {
@@ -294,25 +294,25 @@ export const ProvidersLoginCommand = cmd({
       directory: process.cwd(),
       async fn() {
         UI.empty()
-        prompts.intro("Add credential")
+        prompts.intro("添加凭据")
         if (args.url) {
           const url = args.url.replace(/\/+$/, "")
           const wellknown = (await fetch(`${url}/.well-known/opencode`).then((x) => x.json())) as {
             auth: { command: string[]; env: string }
           }
-          prompts.log.info(`Running \`${wellknown.auth.command.join(" ")}\``)
+          prompts.log.info(`正在运行 \`${wellknown.auth.command.join(" ")}\``)
           const proc = Process.spawn(wellknown.auth.command, {
             stdout: "pipe",
           })
           if (!proc.stdout) {
-            prompts.log.error("Failed")
-            prompts.outro("Done")
+            prompts.log.error("失败")
+            prompts.outro("完成")
             return
           }
           const [exit, token] = await Promise.all([proc.exited, text(proc.stdout)])
           if (exit !== 0) {
-            prompts.log.error("Failed")
-            prompts.outro("Done")
+            prompts.log.error("失败")
+            prompts.outro("完成")
             return
           }
           await put(url, {
@@ -320,8 +320,8 @@ export const ProvidersLoginCommand = cmd({
             key: wellknown.auth.env,
             token: token.trim(),
           })
-          prompts.log.success("Logged into " + url)
-          prompts.outro("Done")
+          prompts.log.success("已登录 " + url)
+          prompts.outro("完成")
           return
         }
         await ModelsDev.refresh(true).catch(() => {})
@@ -375,15 +375,15 @@ export const ProvidersLoginCommand = cmd({
               label: x.name,
               value: x.id,
               hint: {
-                opencode: "recommended",
-                openai: "ChatGPT Plus/Pro or API key",
+                opencode: "推荐",
+                openai: "ChatGPT Plus/Pro 或 API 密钥",
               }[x.id],
             })),
           ),
           ...pluginProviders.map((x) => ({
             label: x.name,
             value: x.id,
-            hint: "plugin",
+            hint: "插件",
           })),
         ]
 
@@ -394,19 +394,19 @@ export const ProvidersLoginCommand = cmd({
           const byName = options.find((x) => x.label.toLowerCase() === input.toLowerCase())
           const match = byID ?? byName
           if (!match) {
-            prompts.log.error(`Unknown provider "${input}"`)
+            prompts.log.error(`未知的提供商 "${input}"`)
             process.exit(1)
           }
           provider = match.value
         } else {
           const selected = await prompts.autocomplete({
-            message: "Select provider",
+            message: "选择提供商",
             maxItems: 8,
             options: [
               ...options,
               {
                 value: "other",
-                label: "Other",
+                label: "其他",
               },
             ],
           })
@@ -422,8 +422,8 @@ export const ProvidersLoginCommand = cmd({
 
         if (provider === "other") {
           const custom = await prompts.text({
-            message: "Enter provider id",
-            validate: (x) => (x && x.match(/^[0-9a-z-]+$/) ? undefined : "a-z, 0-9 and hyphens only"),
+            message: "输入提供商 ID",
+            validate: (x) => (x && x.match(/^[0-9a-z-]+$/) ? undefined : "仅允许 a-z、0-9 和连字符"),
           })
           if (prompts.isCancel(custom)) throw new UI.CancelledError()
           provider = custom.replace(/^@ai-sdk\//, "")
@@ -435,37 +435,37 @@ export const ProvidersLoginCommand = cmd({
           }
 
           prompts.log.warn(
-            `This only stores a credential for ${provider} - you will need configure it in opencode.json, check the docs for examples.`,
+            `这只是为 ${provider} 存储凭据 - 您需要在 opencode.json 中配置它，请查看文档获取示例。`,
           )
         }
 
         if (provider === "amazon-bedrock") {
           prompts.log.info(
-            "Amazon Bedrock authentication priority:\n" +
-              "  1. Bearer token (AWS_BEARER_TOKEN_BEDROCK or /connect)\n" +
-              "  2. AWS credential chain (profile, access keys, IAM roles, EKS IRSA)\n\n" +
-              "Configure via opencode.json options (profile, region, endpoint) or\n" +
-              "AWS environment variables (AWS_PROFILE, AWS_REGION, AWS_ACCESS_KEY_ID, AWS_WEB_IDENTITY_TOKEN_FILE).",
+            "Amazon Bedrock 认证优先级:\n" +
+              "  1. Bearer token (AWS_BEARER_TOKEN_BEDROCK 或 /connect)\n" +
+              "  2. AWS 凭据链 (profile、访问密钥、IAM 角色、EKS IRSA)\n\n" +
+              "可通过 opencode.json 选项配置 (profile、region、endpoint) 或\n" +
+              "AWS 环境变量 (AWS_PROFILE、AWS_REGION、AWS_ACCESS_KEY_ID、AWS_WEB_IDENTITY_TOKEN_FILE)。",
           )
         }
 
         if (provider === "opencode") {
-          prompts.log.info("Create an api key at https://opencode.ai/auth")
+          prompts.log.info("在 https://opencode.ai/auth 创建 API 密钥")
         }
 
         if (provider === "vercel") {
-          prompts.log.info("You can create an api key at https://vercel.link/ai-gateway-token")
+          prompts.log.info("您可以在 https://vercel.link/ai-gateway-token 创建 API 密钥")
         }
 
         if (["cloudflare", "cloudflare-ai-gateway"].includes(provider)) {
           prompts.log.info(
-            "Cloudflare AI Gateway can be configured with CLOUDFLARE_GATEWAY_ID, CLOUDFLARE_ACCOUNT_ID, and CLOUDFLARE_API_TOKEN environment variables. Read more: https://opencode.ai/docs/providers/#cloudflare-ai-gateway",
+            "Cloudflare AI Gateway 可以通过 CLOUDFLARE_GATEWAY_ID、CLOUDFLARE_ACCOUNT_ID 和 CLOUDFLARE_API_TOKEN 环境变量配置。详见: https://opencode.ai/docs/providers/#cloudflare-ai-gateway",
           )
         }
 
         const key = await prompts.password({
-          message: "Enter your API key",
-          validate: (x) => (x && x.length > 0 ? undefined : "Required"),
+          message: "输入您的 API 密钥",
+          validate: (x) => (x && x.length > 0 ? undefined : "必填"),
         })
         if (prompts.isCancel(key)) throw new UI.CancelledError()
         await put(provider, {
@@ -473,7 +473,7 @@ export const ProvidersLoginCommand = cmd({
           key,
         })
 
-        prompts.outro("Done")
+        prompts.outro("完成")
       },
     })
   },
@@ -481,7 +481,7 @@ export const ProvidersLoginCommand = cmd({
 
 export const ProvidersLogoutCommand = cmd({
   command: "logout",
-  describe: "log out from a configured provider",
+  describe: "从已配置的提供商退出登录",
   async handler(_args) {
     UI.empty()
     const credentials: Array<[string, Auth.Info]> = await AppRuntime.runPromise(
@@ -490,14 +490,14 @@ export const ProvidersLogoutCommand = cmd({
         return Object.entries(yield* auth.all())
       }),
     )
-    prompts.intro("Remove credential")
+    prompts.intro("删除凭据")
     if (credentials.length === 0) {
-      prompts.log.error("No credentials found")
+      prompts.log.error("未找到凭据")
       return
     }
     const database = await ModelsDev.get()
     const selected = await prompts.select({
-      message: "Select provider",
+      message: "选择提供商",
       options: credentials.map(([key, value]) => ({
         label: (database[key]?.name || key) + UI.Style.TEXT_DIM + " (" + value.type + ")",
         value: key,
@@ -511,6 +511,6 @@ export const ProvidersLogoutCommand = cmd({
         yield* auth.remove(providerID)
       }),
     )
-    prompts.outro("Logout successful")
+    prompts.outro("退出登录成功")
   },
 })

@@ -222,26 +222,26 @@ function sanitize(data: { info: Session.Info; messages: MessageV2.WithParts[] })
 
 export const ExportCommand = cmd({
   command: "export [sessionID]",
-  describe: "export session data as JSON",
+  describe: "将会话数据导出为 JSON",
   builder: (yargs: Argv) => {
     return yargs
       .positional("sessionID", {
-        describe: "session id to export",
+        describe: "要导出的会话 ID",
         type: "string",
       })
       .option("sanitize", {
-        describe: "redact sensitive transcript and file data",
+        describe: "删除敏感的记录和文件数据",
         type: "boolean",
       })
   },
   handler: async (args) => {
     await bootstrap(process.cwd(), async () => {
       let sessionID = args.sessionID ? SessionID.make(args.sessionID) : undefined
-      process.stderr.write(`Exporting session: ${sessionID ?? "latest"}\n`)
+      process.stderr.write(`正在导出会话: ${sessionID ?? "最新"}\n`)
 
       if (!sessionID) {
         UI.empty()
-        prompts.intro("Export session", {
+        prompts.intro("导出会话", {
           output: process.stderr,
         })
 
@@ -251,10 +251,10 @@ export const ExportCommand = cmd({
         }
 
         if (sessions.length === 0) {
-          prompts.log.error("No sessions found", {
+          prompts.log.error("未找到会话", {
             output: process.stderr,
           })
-          prompts.outro("Done", {
+          prompts.outro("完成", {
             output: process.stderr,
           })
           return
@@ -263,7 +263,7 @@ export const ExportCommand = cmd({
         sessions.sort((a, b) => b.time.updated - a.time.updated)
 
         const selectedSession = await prompts.autocomplete({
-          message: "Select session to export",
+          message: "选择要导出的会话",
           maxItems: 10,
           options: sessions.map((session) => ({
             label: session.title,
@@ -279,7 +279,7 @@ export const ExportCommand = cmd({
 
         sessionID = selectedSession
 
-        prompts.outro("Exporting session...", {
+        prompts.outro("正在导出会话...", {
           output: process.stderr,
         })
       }
@@ -298,7 +298,7 @@ export const ExportCommand = cmd({
         process.stdout.write(JSON.stringify(args.sanitize ? sanitize(exportData) : exportData, null, 2))
         process.stdout.write(EOL)
       } catch {
-        UI.error(`Session not found: ${sessionID!}`)
+        UI.error(`未找到会话: ${sessionID!}`)
         process.exit(1)
       }
     })

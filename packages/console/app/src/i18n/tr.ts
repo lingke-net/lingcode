@@ -87,7 +87,7 @@ export const dict = {
 
   "temp.title": "opencode | Terminal için geliştirilmiş yapay zeka kodlama ajanı",
   "temp.hero.title": "Terminal için geliştirilmiş yapay zeka kodlama ajanı",
-  "temp.zen": "opencode zen",
+  "temp.zen": "lingke coding plan",
   "temp.getStarted": "Başlayın",
   "temp.feature.native.title": "Yerel (Native) TUI",
   "temp.feature.native.body": "Duyarlı, yerel, temalandırılabilir bir terminal arayüzü",
@@ -188,12 +188,12 @@ export const dict = {
     "Zen, OpenCode'un kodlama ajanları için özel olarak test edip benchmark ettiği seçilmiş AI modellerine erişim sağlar. Sağlayıcılar arasında tutarsız performans ve kalite konusunda endişelenmeyin; çalışan, doğrulanmış modelleri kullanın.",
   "home.zenCta.link": "Zen hakkında",
 
-  "zen.title": "OpenCode Zen | Kodlama ajanları için güvenilir, optimize edilmiş modellerin seçilmiş seti",
+  "zen.title": "lingke coding plan | Kodlama ajanları için güvenilir, optimize edilmiş modellerin seçilmiş seti",
   "zen.hero.title": "Kodlama ajanları için güvenilir, optimize modeller",
   "zen.hero.body":
     "Zen, OpenCode'un kodlama ajanları için özel olarak test edip benchmark ettiği seçilmiş AI modellerine erişim sağlar. Sağlayıcılar arasında tutarsız performans ve kalite konusunda endişelenmeyin; çalışan, doğrulanmış modelleri kullanın.",
 
-  "zen.faq.q1": "OpenCode Zen nedir?",
+  "zen.faq.q1": "lingke coding plan nedir?",
   "zen.faq.a1":
     "Zen, OpenCode ekibi tarafından oluşturulan ve kodlama ajanları için test edilip benchmark edilen seçilmiş bir AI model setidir.",
   "zen.faq.q2": "Zen'i daha doğru yapan nedir?",

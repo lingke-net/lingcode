@@ -49,22 +49,22 @@ interface SessionStats {
 
 export const StatsCommand = cmd({
   command: "stats",
-  describe: "show token usage and cost statistics",
+  describe: "显示令牌使用量和费用统计",
   builder: (yargs: Argv) => {
     return yargs
       .option("days", {
-        describe: "show stats for the last N days (default: all time)",
+        describe: "显示最近 N 天的统计（默认全部时间）",
         type: "number",
       })
       .option("tools", {
-        describe: "number of tools to show (default: all)",
+        describe: "显示的工具数量（默认全部）",
         type: "number",
       })
       .option("models", {
-        describe: "show model statistics (default: hidden). Pass a number to show top N, otherwise shows all",
+        describe: "显示模型统计（默认隐藏）。传入数字显示前 N 个，否则显示全部",
       })
       .option("project", {
-        describe: "filter by project (default: all projects, empty string: current project)",
+        describe: "按项目筛选（默认全部项目，空字符串：当前项目）",
         type: "string",
       })
   },
@@ -150,7 +150,7 @@ export async function aggregateSessionStats(days?: number, projectFilter?: strin
   }
 
   if (filteredSessions.length > 1000) {
-    console.log(`Large dataset detected (${filteredSessions.length} sessions). This may take a while...`)
+    console.log(`检测到大型数据集（${filteredSessions.length} 个会话）。这可能需要一些时间...`)
   }
 
   if (filteredSessions.length === 0) {
@@ -321,30 +321,30 @@ export function displayStats(stats: SessionStats, toolLimit?: number, modelLimit
 
   // Overview section
   console.log("┌────────────────────────────────────────────────────────┐")
-  console.log("│                       OVERVIEW                         │")
+  console.log("│                       概览                              │")
   console.log("├────────────────────────────────────────────────────────┤")
-  console.log(renderRow("Sessions", stats.totalSessions.toLocaleString()))
-  console.log(renderRow("Messages", stats.totalMessages.toLocaleString()))
-  console.log(renderRow("Days", stats.days.toString()))
+  console.log(renderRow("会话数", stats.totalSessions.toLocaleString()))
+  console.log(renderRow("消息数", stats.totalMessages.toLocaleString()))
+  console.log(renderRow("天数", stats.days.toString()))
   console.log("└────────────────────────────────────────────────────────┘")
   console.log()
 
   // Cost & Tokens section
   console.log("┌────────────────────────────────────────────────────────┐")
-  console.log("│                    COST & TOKENS                       │")
+  console.log("│                    费用与令牌                           │")
   console.log("├────────────────────────────────────────────────────────┤")
   const cost = isNaN(stats.totalCost) ? 0 : stats.totalCost
   const costPerDay = isNaN(stats.costPerDay) ? 0 : stats.costPerDay
   const tokensPerSession = isNaN(stats.tokensPerSession) ? 0 : stats.tokensPerSession
-  console.log(renderRow("Total Cost", `$${cost.toFixed(2)}`))
-  console.log(renderRow("Avg Cost/Day", `$${costPerDay.toFixed(2)}`))
-  console.log(renderRow("Avg Tokens/Session", formatNumber(Math.round(tokensPerSession))))
+  console.log(renderRow("总费用", `$${cost.toFixed(2)}`))
+  console.log(renderRow("日均费用", `$${costPerDay.toFixed(2)}`))
+  console.log(renderRow("每会话平均令牌数", formatNumber(Math.round(tokensPerSession))))
   const medianTokensPerSession = isNaN(stats.medianTokensPerSession) ? 0 : stats.medianTokensPerSession
-  console.log(renderRow("Median Tokens/Session", formatNumber(Math.round(medianTokensPerSession))))
-  console.log(renderRow("Input", formatNumber(stats.totalTokens.input)))
-  console.log(renderRow("Output", formatNumber(stats.totalTokens.output)))
-  console.log(renderRow("Cache Read", formatNumber(stats.totalTokens.cache.read)))
-  console.log(renderRow("Cache Write", formatNumber(stats.totalTokens.cache.write)))
+  console.log(renderRow("每会话令牌中位数", formatNumber(Math.round(medianTokensPerSession))))
+  console.log(renderRow("输入", formatNumber(stats.totalTokens.input)))
+  console.log(renderRow("输出", formatNumber(stats.totalTokens.output)))
+  console.log(renderRow("缓存读取", formatNumber(stats.totalTokens.cache.read)))
+  console.log(renderRow("缓存写入", formatNumber(stats.totalTokens.cache.write)))
   console.log("└────────────────────────────────────────────────────────┘")
   console.log()
 
@@ -354,17 +354,17 @@ export function displayStats(stats: SessionStats, toolLimit?: number, modelLimit
     const modelsToDisplay = modelLimit === Infinity ? sortedModels : sortedModels.slice(0, modelLimit)
 
     console.log("┌────────────────────────────────────────────────────────┐")
-    console.log("│                      MODEL USAGE                       │")
+    console.log("│                      模型使用                           │")
     console.log("├────────────────────────────────────────────────────────┤")
 
     for (const [model, usage] of modelsToDisplay) {
       console.log(`│ ${model.padEnd(54)} │`)
-      console.log(renderRow("  Messages", usage.messages.toLocaleString()))
-      console.log(renderRow("  Input Tokens", formatNumber(usage.tokens.input)))
-      console.log(renderRow("  Output Tokens", formatNumber(usage.tokens.output)))
-      console.log(renderRow("  Cache Read", formatNumber(usage.tokens.cache.read)))
-      console.log(renderRow("  Cache Write", formatNumber(usage.tokens.cache.write)))
-      console.log(renderRow("  Cost", `$${usage.cost.toFixed(4)}`))
+      console.log(renderRow("  消息数", usage.messages.toLocaleString()))
+      console.log(renderRow("  输入令牌", formatNumber(usage.tokens.input)))
+      console.log(renderRow("  输出令牌", formatNumber(usage.tokens.output)))
+      console.log(renderRow("  缓存读取", formatNumber(usage.tokens.cache.read)))
+      console.log(renderRow("  缓存写入", formatNumber(usage.tokens.cache.write)))
+      console.log(renderRow("  费用", `$${usage.cost.toFixed(4)}`))
       console.log("├────────────────────────────────────────────────────────┤")
     }
     // Remove last separator and add bottom border
@@ -379,7 +379,7 @@ export function displayStats(stats: SessionStats, toolLimit?: number, modelLimit
     const toolsToDisplay = toolLimit ? sortedTools.slice(0, toolLimit) : sortedTools
 
     console.log("┌────────────────────────────────────────────────────────┐")
-    console.log("│                      TOOL USAGE                        │")
+    console.log("│                      工具使用                           │")
     console.log("├────────────────────────────────────────────────────────┤")
 
     const maxCount = Math.max(...toolsToDisplay.map(([, count]) => count))

@@ -11,18 +11,18 @@ import { errorMessage } from "../../util/error"
 
 const QueryCommand = cmd({
   command: "$0 [query]",
-  describe: "open an interactive sqlite3 shell or run a query",
+  describe: "打开交互式 sqlite3 shell 或执行查询",
   builder: (yargs: Argv) => {
     return yargs
       .positional("query", {
         type: "string",
-        describe: "SQL query to execute",
+        describe: "要执行的 SQL 查询",
       })
       .option("format", {
         type: "string",
         choices: ["json", "tsv"],
         default: "tsv",
-        describe: "Output format",
+        describe: "输出格式",
       })
   },
   handler: async (args: { query?: string; format: string }) => {
@@ -56,7 +56,7 @@ const QueryCommand = cmd({
 
 const PathCommand = cmd({
   command: "path",
-  describe: "print the database path",
+  describe: "打印数据库路径",
   handler: () => {
     console.log(Database.Path)
   },
@@ -64,7 +64,7 @@ const PathCommand = cmd({
 
 const MigrateCommand = cmd({
   command: "migrate",
-  describe: "migrate JSON data to SQLite (merges with existing data)",
+  describe: "将 JSON 数据迁移到 SQLite（与现有数据合并）",
   handler: async () => {
     const sqlite = new BunDatabase(Database.Path)
     const tty = process.stderr.isTTY
@@ -95,14 +95,14 @@ const MigrateCommand = cmd({
       if (tty) process.stderr.write("\x1b[?25h")
       else process.stderr.write(`sqlite-migration:done${EOL}`)
       UI.println(
-        `Migration complete: ${stats.projects} projects, ${stats.sessions} sessions, ${stats.messages} messages`,
+        `迁移完成: ${stats.projects} 个项目, ${stats.sessions} 个会话, ${stats.messages} 条消息`,
       )
       if (stats.errors.length > 0) {
-        UI.println(`${stats.errors.length} errors occurred during migration`)
+        UI.println(`迁移过程中发生 ${stats.errors.length} 个错误`)
       }
     } catch (err) {
       if (tty) process.stderr.write("\x1b[?25h")
-      UI.error(`Migration failed: ${errorMessage(err)}`)
+      UI.error(`迁移失败: ${errorMessage(err)}`)
       process.exit(1)
     } finally {
       sqlite.close()
@@ -112,7 +112,7 @@ const MigrateCommand = cmd({
 
 export const DbCommand = cmd({
   command: "db",
-  describe: "database tools",
+  describe: "数据库工具",
   builder: (yargs: Argv) => {
     return yargs.command(QueryCommand).command(PathCommand).command(MigrateCommand).demandCommand()
   },

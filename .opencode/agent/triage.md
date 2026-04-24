@@ -51,7 +51,7 @@ If the issue mentions nix, assign to `rekram1-node`.
 
 #### zen
 
-**Only** add if the issue mentions "zen" or "opencode zen" or "opencode black".
+**Only** add if the issue mentions "zen" or "lingke coding plan" or "opencode black".
 
 If the issue doesn't have "zen" or "opencode black" in it then don't add zen label
 

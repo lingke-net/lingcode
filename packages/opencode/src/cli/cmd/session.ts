@@ -42,17 +42,17 @@ function pagerCmd(): string[] {
 
 export const SessionCommand = cmd({
   command: "session",
-  describe: "manage sessions",
+  describe: "管理会话",
   builder: (yargs: Argv) => yargs.command(SessionListCommand).command(SessionDeleteCommand).demandCommand(),
   async handler() {},
 })
 
 export const SessionDeleteCommand = cmd({
   command: "delete <sessionID>",
-  describe: "delete a session",
+  describe: "删除会话",
   builder: (yargs: Argv) => {
     return yargs.positional("sessionID", {
-      describe: "session ID to delete",
+      describe: "要删除的会话 ID",
       type: "string",
       demandOption: true,
     })
@@ -63,27 +63,27 @@ export const SessionDeleteCommand = cmd({
       try {
         await AppRuntime.runPromise(Session.Service.use((svc) => svc.get(sessionID)))
       } catch {
-        UI.error(`Session not found: ${args.sessionID}`)
+        UI.error(`未找到会话: ${args.sessionID}`)
         process.exit(1)
       }
       await AppRuntime.runPromise(Session.Service.use((svc) => svc.remove(sessionID)))
-      UI.println(UI.Style.TEXT_SUCCESS_BOLD + `Session ${args.sessionID} deleted` + UI.Style.TEXT_NORMAL)
+      UI.println(UI.Style.TEXT_SUCCESS_BOLD + `会话 ${args.sessionID} 已删除` + UI.Style.TEXT_NORMAL)
     })
   },
 })
 
 export const SessionListCommand = cmd({
   command: "list",
-  describe: "list sessions",
+  describe: "列出会话",
   builder: (yargs: Argv) => {
     return yargs
       .option("max-count", {
         alias: "n",
-        describe: "limit to N most recent sessions",
+        describe: "限制为最近 N 个会话",
         type: "number",
       })
       .option("format", {
-        describe: "output format",
+        describe: "输出格式",
         type: "string",
         choices: ["table", "json"],
         default: "table",
@@ -134,7 +134,7 @@ function formatSessionTable(sessions: Session.Info[]): string {
   const maxIdWidth = Math.max(20, ...sessions.map((s) => s.id.length))
   const maxTitleWidth = Math.max(25, ...sessions.map((s) => s.title.length))
 
-  const header = `Session ID${" ".repeat(maxIdWidth - 10)}  Title${" ".repeat(maxTitleWidth - 5)}  Updated`
+  const header = `会话 ID${" ".repeat(maxIdWidth - 6)}  标题${" ".repeat(maxTitleWidth - 4)}  更新时间`
   lines.push(header)
   lines.push("─".repeat(header.length))
   for (const session of sessions) {

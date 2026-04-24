@@ -159,7 +159,7 @@ OpenCode TUI with the opencode theme
 OpenCode Web - Active Session
 OpenCode Web - New Session
 OpenCode Web - See Servers
-OpenCode Zen
+lingke coding plan
 OpenCode-Obsidian
 OpenRouter dashboard
 OpenWork

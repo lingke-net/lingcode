@@ -141,7 +141,7 @@ export function Prompt(props: PromptProps) {
   function promptModelWarning() {
     toast.show({
       variant: "warning",
-      message: "Connect a provider to send prompts",
+      message: "连接提供商以发送提示",
       duration: 3000,
     })
     if (sync.data.provider.length === 0) {
@@ -254,9 +254,9 @@ export function Prompt(props: PromptProps) {
   command.register(() => {
     return [
       {
-        title: "Clear prompt",
+        title: "清空提示",
         value: "prompt.clear",
-        category: "Prompt",
+        category: "提示",
         hidden: true,
         onSelect: (dialog) => {
           input.extmarks.clear()
@@ -265,10 +265,10 @@ export function Prompt(props: PromptProps) {
         },
       },
       {
-        title: "Submit prompt",
+        title: "提交提示",
         value: "prompt.submit",
         keybind: "input_submit",
-        category: "Prompt",
+        category: "提示",
         hidden: true,
         onSelect: async (dialog) => {
           if (!input.focused) return
@@ -279,10 +279,10 @@ export function Prompt(props: PromptProps) {
         },
       },
       {
-        title: "Paste",
+        title: "粘贴",
         value: "prompt.paste",
         keybind: "input_paste",
-        category: "Prompt",
+        category: "提示",
         hidden: true,
         onSelect: async () => {
           const content = await Clipboard.read()
@@ -296,10 +296,10 @@ export function Prompt(props: PromptProps) {
         },
       },
       {
-        title: "Interrupt session",
+        title: "中断会话",
         value: "session.interrupt",
         keybind: "session_interrupt",
-        category: "Session",
+        category: "会话",
         hidden: true,
         enabled: status().type !== "idle",
         onSelect: (dialog) => {
@@ -328,8 +328,8 @@ export function Prompt(props: PromptProps) {
         },
       },
       {
-        title: "Open editor",
-        category: "Session",
+        title: "打开编辑器",
+        category: "会话",
         keybind: "editor_open",
         value: "prompt.editor",
         slash: {
@@ -415,9 +415,9 @@ export function Prompt(props: PromptProps) {
         },
       },
       {
-        title: "Skills",
+        title: "技能",
         value: "prompt.skills",
-        category: "Prompt",
+        category: "提示",
         slash: {
           name: "skills",
         },
@@ -598,9 +598,9 @@ export function Prompt(props: PromptProps) {
 
   command.register(() => [
     {
-      title: "Stash prompt",
+      title: "暂存提示",
       value: "prompt.stash",
-      category: "Prompt",
+      category: "提示",
       enabled: !!store.prompt.input,
       onSelect: (dialog) => {
         if (!store.prompt.input) return
@@ -616,9 +616,9 @@ export function Prompt(props: PromptProps) {
       },
     },
     {
-      title: "Stash pop",
+      title: "弹出暂存",
       value: "prompt.stash.pop",
-      category: "Prompt",
+      category: "提示",
       enabled: stash.list().length > 0,
       onSelect: (dialog) => {
         const entry = stash.pop()
@@ -632,9 +632,9 @@ export function Prompt(props: PromptProps) {
       },
     },
     {
-      title: "Stash list",
+      title: "暂存列表",
       value: "prompt.stash.list",
-      category: "Prompt",
+      category: "提示",
       enabled: stash.list().length > 0,
       onSelect: (dialog) => {
         dialog.replace(() => (
@@ -708,10 +708,10 @@ export function Prompt(props: PromptProps) {
       const res = await sdk.client.session.create({ workspace: props.workspaceID })
 
       if (res.error) {
-        console.log("Creating a session failed:", res.error)
+        console.log("创建会话失败:", res.error)
 
         toast.show({
-          message: "Creating a session failed. Open console for more details.",
+          message: "创建会话失败。打开控制台查看更多详情。",
           variant: "error",
         })
 
@@ -756,12 +756,12 @@ export function Prompt(props: PromptProps) {
               const start = editorSelection.selection.start
               const end = editorSelection.selection.end
               if (start.line === end.line && start.character === end.character) {
-                return `Note: The user opened the file "${editorSelection.filePath}".`
+                return `注意：用户打开了文件 "${editorSelection.filePath}"。`
               }
               if (start.line === end.line) {
-                return `Note: The user selected line ${start.line} from  "${editorSelection.filePath}": ${editorSelection.text}`
+                return `注意：用户从 "${editorSelection.filePath}" 选择了第 ${start.line} 行：${editorSelection.text}`
               }
-              return `Note: The user selected lines ${start.line} to ${end.line} from "${editorSelection.filePath}": ${editorSelection.text}`
+              return `注意：用户从 "${editorSelection.filePath}" 选择了第 ${start.line} 到 ${end.line} 行：${editorSelection.text}`
             })(),
             synthetic: true,
           },
@@ -965,10 +965,10 @@ export function Prompt(props: PromptProps) {
     if (store.mode === "shell") {
       if (!shell().length) return undefined
       const example = shell()[store.placeholder % shell().length]
-      return `Run a command... "${example}"`
+      return `运行命令... "${example}"`
     }
     if (!list().length) return undefined
-    return `Ask anything... "${list()[store.placeholder % list().length]}"`
+    return `随便问... "${list()[store.placeholder % list().length]}"`
   })
 
   const spinnerDef = createMemo(() => {
@@ -1321,7 +1321,7 @@ export function Prompt(props: PromptProps) {
                       const r = retry()
                       if (!r) return
                       if (r.message.includes("exceeded your current quota") && r.message.includes("gemini"))
-                        return "gemini is way too hot right now"
+                        return "gemini 目前太热门了"
                       if (r.message.length > 80) return r.message.slice(0, 80) + "..."
                       return r.message
                     })
@@ -1353,7 +1353,7 @@ export function Prompt(props: PromptProps) {
                       const r = retry()
                       if (!r) return ""
                       const baseMessage = message()
-                      const truncatedHint = isTruncated() ? " (click to expand)" : ""
+                      const truncatedHint = isTruncated() ? "（点击展开）" : ""
                       const duration = formatDuration(seconds())
                       const retryInfo = ` [retrying ${duration ? `in ${duration} ` : ""}attempt #${r.attempt}]`
                       return baseMessage + truncatedHint + retryInfo
@@ -1372,7 +1372,7 @@ export function Prompt(props: PromptProps) {
               <text fg={store.interrupt > 0 ? theme.primary : theme.text}>
                 esc{" "}
                 <span style={{ fg: store.interrupt > 0 ? theme.primary : theme.textMuted }}>
-                  {store.interrupt > 0 ? "again to interrupt" : "interrupt"}
+                  {store.interrupt > 0 ? "再次中断" : "中断"}
                 </span>
               </text>
             </box>
@@ -1391,18 +1391,18 @@ export function Prompt(props: PromptProps) {
                       )}
                     </Match>
                     <Match when={true}>
-                      <text fg={theme.text}>
-                        {keybind.print("agent_cycle")} <span style={{ fg: theme.textMuted }}>agents</span>
+                        <text fg={theme.text}>
+                        {keybind.print("agent_cycle")} <span style={{ fg: theme.textMuted }}>智能体</span>
                       </text>
                     </Match>
                   </Switch>
                   <text fg={theme.text}>
-                    {keybind.print("command_list")} <span style={{ fg: theme.textMuted }}>commands</span>
+                    {keybind.print("command_list")} <span style={{ fg: theme.textMuted }}>命令</span>
                   </text>
                 </Match>
                 <Match when={store.mode === "shell"}>
                   <text fg={theme.text}>
-                    esc <span style={{ fg: theme.textMuted }}>exit shell mode</span>
+                    esc <span style={{ fg: theme.textMuted }}>退出 shell 模式</span>
                   </text>
                 </Match>
               </Switch>

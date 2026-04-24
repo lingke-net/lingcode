@@ -11,27 +11,27 @@ import { Effect } from "effect"
 
 export const ModelsCommand = cmd({
   command: "models [provider]",
-  describe: "list all available models",
+  describe: "列出所有可用的模型",
   builder: (yargs: Argv) => {
     return yargs
       .positional("provider", {
-        describe: "provider ID to filter models by",
+        describe: "用于筛选模型的提供商 ID",
         type: "string",
         array: false,
       })
       .option("verbose", {
-        describe: "use more verbose model output (includes metadata like costs)",
+        describe: "使用更详细的模型输出（包括费用等元数据）",
         type: "boolean",
       })
       .option("refresh", {
-        describe: "refresh the models cache from models.dev",
+        describe: "从 models.dev 刷新模型缓存",
         type: "boolean",
       })
   },
   handler: async (args) => {
     if (args.refresh) {
       await ModelsDev.refresh(true)
-      UI.println(UI.Style.TEXT_SUCCESS_BOLD + "Models cache refreshed" + UI.Style.TEXT_NORMAL)
+      UI.println(UI.Style.TEXT_SUCCESS_BOLD + "模型缓存已刷新" + UI.Style.TEXT_NORMAL)
     }
 
     await Instance.provide({
@@ -59,7 +59,7 @@ export const ModelsCommand = cmd({
               const providerID = ProviderID.make(args.provider)
               const provider = providers[providerID]
               if (!provider) {
-                yield* Effect.sync(() => UI.error(`Provider not found: ${args.provider}`))
+                yield* Effect.sync(() => UI.error(`未找到提供商: ${args.provider}`))
                 return
               }
 

@@ -415,7 +415,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       },
     },
     {
-      title: "New session",
+      title: "新会话",
       suggested: route.data.type === "session",
       value: "session.new",
       keybind: "session_new",

@@ -7,11 +7,11 @@ import { Process } from "@/util"
 
 export const PrCommand = cmd({
   command: "pr <number>",
-  describe: "fetch and checkout a GitHub PR branch, then run opencode",
+  describe: "获取并检出 GitHub PR 分支，然后运行 opencode",
   builder: (yargs) =>
     yargs.positional("number", {
       type: "number",
-      describe: "PR number to checkout",
+      describe: "要检出的 PR 编号",
       demandOption: true,
     }),
   async handler(args) {
@@ -20,13 +20,13 @@ export const PrCommand = cmd({
       async fn() {
         const project = Instance.project
         if (project.vcs !== "git") {
-          UI.error("Could not find git repository. Please run this command from a git repository.")
+          UI.error("无法找到 git 仓库。请在 git 仓库中运行此命令。")
           process.exit(1)
         }
 
         const prNumber = args.number
         const localBranchName = `pr/${prNumber}`
-        UI.println(`Fetching and checking out PR #${prNumber}...`)
+        UI.println(`正在获取并检出 PR #${prNumber}...`)
 
         // Use gh pr checkout with custom branch name
         const result = await Process.run(
@@ -37,7 +37,7 @@ export const PrCommand = cmd({
         )
 
         if (result.code !== 0) {
-          UI.error(`Failed to checkout PR #${prNumber}. Make sure you have gh CLI installed and authenticated.`)
+          UI.error(`检出 PR #${prNumber} 失败。请确保已安装 gh CLI 并已认证。`)
           process.exit(1)
         }
 
@@ -79,7 +79,7 @@ export const PrCommand = cmd({
                     }),
                   ),
                 )
-                UI.println(`Added fork remote: ${remoteName}`)
+                UI.println(`已添加 fork 远程: ${remoteName}`)
               }
 
               // Set upstream to the fork so pushes go there
@@ -98,8 +98,8 @@ export const PrCommand = cmd({
               const sessionMatch = prInfo.body.match(/https:\/\/opncd\.ai\/s\/([a-zA-Z0-9_-]+)/)
               if (sessionMatch) {
                 const sessionUrl = sessionMatch[0]
-                UI.println(`Found opencode session: ${sessionUrl}`)
-                UI.println(`Importing session...`)
+                UI.println(`找到 opencode 会话: ${sessionUrl}`)
+                UI.println(`正在导入会话...`)
 
                 const importResult = await Process.text(["opencode", "import", sessionUrl], {
                   nothrow: true,
@@ -110,7 +110,7 @@ export const PrCommand = cmd({
                   const sessionIdMatch = importOutput.match(/Imported session: ([a-zA-Z0-9_-]+)/)
                   if (sessionIdMatch) {
                     sessionId = sessionIdMatch[1]
-                    UI.println(`Session imported: ${sessionId}`)
+                    UI.println(`会话已导入: ${sessionId}`)
                   }
                 }
               }
@@ -118,9 +118,9 @@ export const PrCommand = cmd({
           }
         }
 
-        UI.println(`Successfully checked out PR #${prNumber} as branch '${localBranchName}'`)
+        UI.println(`成功检出 PR #${prNumber} 为分支 '${localBranchName}'`)
         UI.println()
-        UI.println("Starting opencode...")
+        UI.println("正在启动 opencode...")
         UI.println()
 
         const opencodeArgs = sessionId ? ["-s", sessionId] : []
