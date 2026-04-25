@@ -167,9 +167,10 @@ jobs:
           merge-multiple: true
 
       - name: Publish NPM
-        run: bun ./packages/opencode/script/publish-lingcode.ts
+        run: bun run publish-lingcode
         env:
           SKIP_DOCKER: "true"
+          SKIP_NPM: "true"
           OPENCODE_VERSION: ${{ needs.version.outputs.version }}
           OPENCODE_RELEASE: ${{ needs.version.outputs.release }}
           AUR_KEY: ${{ secrets.AUR_KEY }}

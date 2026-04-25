@@ -26,43 +26,48 @@ async function publish(dir: string, name: string, version: string) {
   await $`npm publish *.tgz --access public --tag ${Script.channel}`.cwd(dir)
 }
 
+// NPM publishing section - skip if SKIP_NPM is set
 const binaries: Record<string, string> = {}
 for (const filepath of new Bun.Glob("*/package.json").scanSync({ cwd: "./dist" })) {
-  const pkg = await Bun.file(`./dist/${filepath}`).json()
-  binaries[pkg.name] = pkg.version
+  const distPkg = await Bun.file(`./dist/${filepath}`).json()
+  binaries[distPkg.name] = distPkg.version
 }
 console.log("binaries", binaries)
 const version = Object.values(binaries)[0]
 
-await $`mkdir -p ./dist/${pkg.name}`
-await $`cp -r ./bin ./dist/${pkg.name}/bin`
-await $`cp ./script/postinstall.mjs ./dist/${pkg.name}/postinstall.mjs`
-await Bun.file(`./dist/${pkg.name}/LICENSE`).write(await Bun.file("../../LICENSE").text())
+if (!process.env.SKIP_NPM) {
+  await $`mkdir -p ./dist/${pkg.name}`
+  await $`cp -r ./bin ./dist/${pkg.name}/bin`
+  await $`cp ./script/postinstall.mjs ./dist/${pkg.name}/postinstall.mjs`
+  await Bun.file(`./dist/${pkg.name}/LICENSE`).write(await Bun.file("../../LICENSE").text())
 
-await Bun.file(`./dist/${pkg.name}/package.json`).write(
-  JSON.stringify(
-    {
-      name: NPM_PACKAGE,
-      bin: {
-        [pkg.name]: `./bin/${pkg.name}`,
+  await Bun.file(`./dist/${pkg.name}/package.json`).write(
+    JSON.stringify(
+      {
+        name: NPM_PACKAGE,
+        bin: {
+          [pkg.name]: `./bin/${pkg.name}`,
+        },
+        scripts: {
+          postinstall: "bun ./postinstall.mjs || node ./postinstall.mjs",
+        },
+        version: version,
+        license: pkg.license,
+        optionalDependencies: binaries,
       },
-      scripts: {
-        postinstall: "bun ./postinstall.mjs || node ./postinstall.mjs",
-      },
-      version: version,
-      license: pkg.license,
-      optionalDependencies: binaries,
-    },
-    null,
-    2,
-  ),
-)
+      null,
+      2,
+    ),
+  )
 
-const tasks = Object.entries(binaries).map(async ([name]) => {
-  await publish(`./dist/${name}`, name, binaries[name])
-})
-await Promise.all(tasks)
-await publish(`./dist/${pkg.name}`, NPM_PACKAGE, version)
+  const tasks = Object.entries(binaries).map(async ([name]) => {
+    await publish(`./dist/${name}`, name, binaries[name])
+  })
+  await Promise.all(tasks)
+  await publish(`./dist/${pkg.name}`, NPM_PACKAGE, version)
+} else {
+  console.log("SKIP_NPM is set, skipping NPM publishing")
+}
 
 const platforms = "linux/amd64,linux/arm64"
 const tags = [`${DOCKER_IMAGE}:${version}`, `${DOCKER_IMAGE}:${Script.channel}`]
