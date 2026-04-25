@@ -74,6 +74,7 @@ jobs:
           else
             OPENCODE_BUMP=patch
           fi
+          OPENCODE_RELEASE=true
           ./script/version.ts
 
   build-cli:
