@@ -8,7 +8,7 @@ const dir = fileURLToPath(new URL("..", import.meta.url))
 process.chdir(dir)
 
 const GITHUB_REPO = "lingke-net/lingcode"
-const NPM_PACKAGE = "lingcode-ai"
+const NPM_PACKAGE = "lingcode"
 const DOCKER_IMAGE = "ghcr.io/lingke-net/lingcode"
 const BIN_NAME = "lingcode"
 
