@@ -1,5 +1,5 @@
 import type { APIEvent } from "@solidjs/start/server"
-import { handler } from "../../util/handler"
+import { handler } from "../util/handler"
 
 export async function POST(event: APIEvent) {
   return handler(event, {

@@ -28,7 +28,7 @@ import { withStatics } from "@/util/schema"
 
 import * as ProviderTransform from "./transform"
 import { ModelID, ProviderID } from "./schema"
-import { lingkeModelsProvider } from "./lingke-models"
+import { lingkeProvider } from "./lingke-models"
 
 const log = Log.create({ service: "provider" })
 
@@ -1112,7 +1112,7 @@ const layer: Layer.Layer<
         const database = mapValues(modelsDev, fromModelsDevProvider)
 
         // Add Lingke Coding provider
-        database.lingke = fromModelsDevProvider(lingkeModelsProvider)
+        database.lingke = fromModelsDevProvider(lingkeProvider)
 
         const providers: Record<ProviderID, Info> = {} as Record<ProviderID, Info>
         const languages = new Map<string, LanguageModelV3>()

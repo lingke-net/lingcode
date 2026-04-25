@@ -1,8 +1,8 @@
 // Lingke Coding Models Configuration
 // This file defines the models available through the Lingke API
-import type * as ModelsDev from "../schema/models-dev"
+import type { Provider } from "./models"
 
-export const lingkeModelsProvider: ModelsDev.Provider = {
+export const lingkeProvider: Provider = {
   id: "lingke",
   name: "Lingke Coding",
   api: "https://api.lingke.ink",
@@ -13,6 +13,7 @@ export const lingkeModelsProvider: ModelsDev.Provider = {
       id: "moonshotai/Kimi-K2-Instruct-0905",
       name: "Kimi K2 (0905)",
       family: "moonshotai",
+      release_date: "2025-09-05",
       cost: { input: 1.5, output: 1.5 },
       limit: { context: 128000, input: 128000, output: 8192 },
       temperature: true,
@@ -26,6 +27,7 @@ export const lingkeModelsProvider: ModelsDev.Provider = {
       id: "Pro/zai-org/GLM-4.7",
       name: "GLM-4.7",
       family: "glm",
+      release_date: "2025-04-01",
       cost: { input: 0.5, output: 0.5 },
       limit: { context: 128000, input: 128000, output: 8192 },
       temperature: true,
@@ -39,6 +41,7 @@ export const lingkeModelsProvider: ModelsDev.Provider = {
       id: "Qwen/Qwen3-14B",
       name: "Qwen3 14B",
       family: "qwen",
+      release_date: "2025-03-01",
       cost: { input: 0.8, output: 0.8 },
       limit: { context: 32000, input: 32000, output: 4096 },
       temperature: true,
@@ -52,6 +55,7 @@ export const lingkeModelsProvider: ModelsDev.Provider = {
       id: "gpt-5.4-mini-ca",
       name: "GPT-5.4 Mini CA",
       family: "openai",
+      release_date: "2025-04-15",
       cost: {
         input: 0.9,
         output: 3.6,
@@ -68,6 +72,7 @@ export const lingkeModelsProvider: ModelsDev.Provider = {
       id: "gpt-3.5-turbo",
       name: "GPT-3.5 Turbo",
       family: "openai",
+      release_date: "2025-01-01",
       cost: { input: 0.5, output: 1.5 },
       limit: { context: 16385, input: 16385, output: 4096 },
       temperature: true,
@@ -81,6 +86,7 @@ export const lingkeModelsProvider: ModelsDev.Provider = {
       id: "deepseek-v4-pro",
       name: "DeepSeek V4 Pro",
       family: "deepseek",
+      release_date: "2025-05-01",
       cost: {
         input: 1.0,
         output: 4.0,
@@ -97,6 +103,7 @@ export const lingkeModelsProvider: ModelsDev.Provider = {
       id: "deepseek-v4-flash",
       name: "DeepSeek V4 Flash",
       family: "deepseek",
+      release_date: "2025-05-01",
       cost: {
         input: 0.5,
         output: 2.0,
@@ -113,6 +120,7 @@ export const lingkeModelsProvider: ModelsDev.Provider = {
       id: "deepseek-r1-0528",
       name: "DeepSeek R1 (0528)",
       family: "deepseek",
+      release_date: "2025-05-28",
       cost: { input: 0.6, output: 2.4 },
       limit: { context: 64000, input: 64000, output: 8192 },
       temperature: false,
@@ -125,6 +133,7 @@ export const lingkeModelsProvider: ModelsDev.Provider = {
       id: "deepseek-ai/DeepSeek-V3.2",
       name: "DeepSeek V3.2",
       family: "deepseek",
+      release_date: "2025-04-01",
       cost: {
         input: 0.5,
         output: 2.0,
@@ -141,6 +150,7 @@ export const lingkeModelsProvider: ModelsDev.Provider = {
       id: "deepseek-ai/DeepSeek-V3.1-Terminus",
       name: "DeepSeek V3.1 Terminus",
       family: "deepseek",
+      release_date: "2025-03-15",
       cost: {
         input: 0.4,
         output: 1.6,
@@ -155,5 +165,3 @@ export const lingkeModelsProvider: ModelsDev.Provider = {
     },
   },
 }
-
-export const lingkeProvider = lingkeModelsProvider

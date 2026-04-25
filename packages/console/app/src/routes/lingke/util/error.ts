@@ -43,3 +43,12 @@ export class RateLimitError extends Error {
     this.retryAfter = retryAfter
   }
 }
+
+export class FreeUsageLimitError extends Error {
+  retryAfter?: number
+  constructor(message: string, retryAfter?: number) {
+    super(message)
+    this.name = "FreeUsageLimitError"
+    this.retryAfter = retryAfter
+  }
+}
