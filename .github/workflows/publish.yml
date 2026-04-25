@@ -54,7 +54,7 @@ jobs:
         uses: oven-sh/setup-bun@v2
 
       - name: Install lingcode
-        run: bun i -g lingcode-cli
+        run: bun i -g opencode-ai
 
       - name: Set version
         id: version
