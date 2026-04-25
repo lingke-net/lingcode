@@ -69,7 +69,10 @@ const tags = [`${DOCKER_IMAGE}:${version}`, `${DOCKER_IMAGE}:${Script.channel}`]
 const tagFlags = tags.flatMap((t) => ["-t", t])
 
 if (!Script.preview) {
-  await $`docker buildx build --platform ${platforms} ${tagFlags} --push .`
+  // Skip Docker if SKIP_DOCKER is set
+  if (!process.env.SKIP_DOCKER) {
+    await $`docker buildx build --platform ${platforms} ${tagFlags} --push .`
+  }
 
   const arm64Sha = await $`sha256sum ./dist/lingcode-linux-arm64.tar.gz | cut -d' ' -f1`.text().then((x) => x.trim())
   const x64Sha = await $`sha256sum ./dist/lingcode-linux-x64.tar.gz | cut -d' ' -f1`.text().then((x) => x.trim())

@@ -166,16 +166,10 @@ jobs:
           path: artifacts/
           merge-multiple: true
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish Docker & NPM
-        run: ./packages/opencode/script/publish-lingcode.ts
+      - name: Publish NPM
+        run: bun ./packages/opencode/script/publish-lingcode.ts
         env:
+          SKIP_DOCKER: "true"
           OPENCODE_VERSION: ${{ needs.version.outputs.version }}
           OPENCODE_RELEASE: ${{ needs.version.outputs.release }}
           AUR_KEY: ${{ secrets.AUR_KEY }}
