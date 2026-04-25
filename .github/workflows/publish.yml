@@ -68,8 +68,11 @@ jobs:
         run: |
           if [ -n "${{ inputs.version }}" ]; then
             OPENCODE_VERSION=${{ inputs.version }}
+            OPENCODE_BUMP=patch
           elif [ "${{ inputs.bump }}" != "none" ]; then
             OPENCODE_BUMP=${{ inputs.bump }}
+          else
+            OPENCODE_BUMP=patch
           fi
           ./script/version.ts
 
