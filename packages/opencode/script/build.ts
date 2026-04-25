@@ -259,7 +259,12 @@ if (Script.release) {
       await $`zip -r ../../${key}.zip *`.cwd(`dist/${key}/bin`)
     }
   }
-  await $`gh release upload v${Script.version} ./dist/*.zip ./dist/*.tar.gz --clobber --repo ${process.env.GH_REPO}`
+  // Upload to release (non-fatal if fails)
+  try {
+    await $`gh release upload v${Script.version} ./dist/*.zip ./dist/*.tar.gz --clobber --repo ${process.env.GH_REPO}`.nothrow()
+  } catch {
+    console.log("Release upload skipped, will be handled by publish job")
+  }
 }
 
 export { binaries }
