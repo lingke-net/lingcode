@@ -105,7 +105,7 @@ if (!Script.preview) {
     `sha256sums_x86_64=('${x64Sha}')`,
     "",
     "package() {",
-    `  install -Dm755 ./lingcode "${pkgdir}/usr/bin/lingcode"`,
+    `  install -Dm755 ./lingcode "\${pkgdir}/usr/bin/lingcode"`,
     "}",
     "",
   ].join("\n")
