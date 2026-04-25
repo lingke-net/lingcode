@@ -45,9 +45,13 @@ jobs:
       tag: ${{ steps.version.outputs.tag }}
       repo: ${{ steps.version.outputs.repo }}
     steps:
+      - name: Configure git symlinks
+        run: git config --global core.symlinks true
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
           ssh-key: ${{ secrets.GH_SSH_KEY }}
 
       - name: Setup Bun
